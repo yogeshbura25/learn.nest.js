@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller()
@@ -28,7 +36,20 @@ export class AppController {
   @Post('login')
   login(@Body() body: { inputusername: string; inputuserpassword: string }) {
     const { inputusername, inputuserpassword } = body;
-    return { message: this.appService.login(inputusername, inputuserpassword) };
+    const isAuthenticated = this.appService.login(
+      inputusername,
+      inputuserpassword,
+    );
+    if (!isAuthenticated) {
+      throw new HttpException(
+        'Inavliad username or password',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+    return {
+      statuscode: HttpStatus.OK,
+      messsage: 'User successfully logged in',
+    };
   }
 
   @Get('date')
@@ -36,9 +57,15 @@ export class AppController {
     return this.appService.date();
   }
 
-  @Post('pickacolor/:colorNum')
+  @Get('pickacolor/:colorNum')
   pickacolor(@Param('colorNum') colorNum: string) {
-    return { ColorName: this.appService.pickacolor(colorNum) };
+    const colorName = this.appService.pickacolor(colorNum);
+    if (!colorName) {
+      throw new HttpException(
+        `No color exists for this number ${colorNum}`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    return { ColorName: colorName };
   }
-  
 }

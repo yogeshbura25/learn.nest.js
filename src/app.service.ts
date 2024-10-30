@@ -29,15 +29,11 @@ export class AppService {
     };
   }
 
-  login(inputusername: string, inputuserpassword: string): string {
+  login(inputusername: string, inputuserpassword: string): boolean {
     const username = 'yogesh';
     const password = '123456';
 
-    if (username === inputusername && password === inputuserpassword) {
-      return 'User successfully logged in';
-    } else {
-      return 'Invalid username or password';
-    }
+    return username === inputusername && password === inputuserpassword
   }
 
   date() {
@@ -63,7 +59,7 @@ export class AppService {
     } else if (colorNum === '6') {
       return 'White';
     } else {
-      return 'Black';
+      return null;
     }
   }
 }
