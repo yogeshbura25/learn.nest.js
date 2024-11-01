@@ -68,4 +68,15 @@ export class AppController {
     }
     return { ColorName: colorName };
   }
+
+  @Post('registeruser')
+  async registerUser(@Body('name') name: string, @Body('email') email: string, @Body('password') password: string) {
+    return this.appService.registerUser(name, email, password);
+  }
+
+  @Post('loginuser')
+  async loginUser(@Body('email') email: string, @Body('password') password: string) {
+    return this.appService.loginUser(email, password);
+  }
+
 }
