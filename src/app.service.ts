@@ -70,7 +70,7 @@ export class AppService {
     }
   }
 
-  async registerUser(name: string, email: string, password: string) {
+  async registerUser(name: string | null, email: string, password: string) {
     try {
       const findUser = await this.prisma.user.findUnique({
         where: { email },
@@ -82,7 +82,6 @@ export class AppService {
           HttpStatus.CONFLICT,
         );
       }
-
       const hashedPassword = await bcrypt.hash(password, 6);
 
       const createUser = await this.prisma.user.create({

@@ -6,8 +6,10 @@ import {
   Post,
   HttpException,
   HttpStatus,
+  UsePipes, ValidationPipe
 } from '@nestjs/common';
 import { AppService } from './app.service';
+import { registerDto, loginDto } from './app.dto';
 
 @Controller()
 export class AppController {
@@ -70,12 +72,14 @@ export class AppController {
   }
 
   @Post('registeruser')
-  async registerUser(@Body('name') name: string, @Body('email') email: string, @Body('password') password: string) {
-    return this.appService.registerUser(name, email, password);
+  async registerUser(@Body() registerDto:registerDto) {
+    const { name, email, password } = registerDto;
+    return this.appService.registerUser(name || null, email, password); 
   }
 
   @Post('loginuser')
-  async loginUser(@Body('email') email: string, @Body('password') password: string) {
+  async loginUser(@Body() loginDto:loginDto) {
+    const {email, password} = loginDto;
     return this.appService.loginUser(email, password);
   }
 
