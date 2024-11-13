@@ -1,7 +1,8 @@
 import { Controller,Get, UseGuards,} from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthGuard } from '@nestjs/passport';
-import { JwtGuard } from 'src/guards';
+import { JwtGuard } from 'src/auth/guards';
+
 
 @Controller('user')
 export class UserController {
@@ -16,7 +17,7 @@ getHello( ): string {
 }
 
 @Get('multi')
-@UseGuards(JwtGuard)
+
   multi(): any {
     return this.userService.multi();
   }

@@ -10,7 +10,7 @@ import {
 
 } from '@nestjs/common';
 import { AppService } from './app.service';
-import { JwtGuard } from './guards';
+
 
 @Controller()
 export class AppController {
@@ -32,7 +32,7 @@ export class AppController {
   }
 
   @Get('multi')
-  @UseGuards(JwtGuard)
+  
   multi(): any {
     return this.appService.multi();
   }
