@@ -6,10 +6,11 @@ import {
   Post,
   HttpException,
   HttpStatus,
-  UsePipes, ValidationPipe
+  UseGuards,
+
 } from '@nestjs/common';
 import { AppService } from './app.service';
-import { registerDto, loginDto } from './app.dto';
+import { JwtGuard } from './guards';
 
 @Controller()
 export class AppController {
@@ -31,6 +32,7 @@ export class AppController {
   }
 
   @Get('multi')
+  @UseGuards(JwtGuard)
   multi(): any {
     return this.appService.multi();
   }
@@ -71,16 +73,6 @@ export class AppController {
     return { ColorName: colorName };
   }
 
-  @Post('registeruser')
-  async registerUser(@Body() registerDto:registerDto) {
-    const { name, email, password } = registerDto;
-    return this.appService.registerUser(name || null, email, password); 
-  }
 
-  @Post('loginuser')
-  async loginUser(@Body() loginDto:loginDto) {
-    const {email, password} = loginDto;
-    return this.appService.loginUser(email, password);
-  }
 
 }
