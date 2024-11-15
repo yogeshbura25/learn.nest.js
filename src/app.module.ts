@@ -1,11 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
-import { JwtStrategy } from './auth/startegy/jwt.startegy';
-import { UserController } from './user/user.controller';
+
 import { UserModule } from './user/user.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthService } from './auth/auth.service';
+import { PrismaService } from './prisma.service';
+import { UserService } from './user/user.service';
+import { JwtService } from '@nestjs/jwt';
 
 
 @Module({
@@ -17,7 +20,7 @@ import { AppService } from './app.service';
     UserModule,
     AppModule
   ],
-  providers: [JwtStrategy, AppService],
-  controllers: [UserController, AppController],
+  providers: [AppService,PrismaService, AuthService, UserService, JwtService],
+  controllers: [AppController],
 })
 export class AppModule {}
