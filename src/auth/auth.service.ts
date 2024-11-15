@@ -8,7 +8,7 @@ import { ConfigService } from '@nestjs/config';
 export class AuthService {
 
     constructor(
-        private config: ConfigService,
+      
         private prisma: PrismaService,
         private jwt: JwtService,
       ) {}
@@ -57,25 +57,25 @@ export class AuthService {
       }
     }
   }
-
+ 
   async loginUser(email: string, password: string) {
     try {
       const findUser = await this.prisma.user.findUnique({
         where: { email },
       });
-  
-      if (!findUser) {
-        throw new HttpException('User does not exist', HttpStatus.NOT_FOUND);
-      }
-  
-      const isPasswordValid = await bcrypt.compare(password, findUser.password);
-      if (!isPasswordValid) {
-        throw new HttpException('Incorrect password', HttpStatus.UNAUTHORIZED);
-      }
-  
-      // Generate JWT token using the `signInToken` method
-      const tokenData = await this.signInToken(findUser.id, findUser.email);
-  
+      if(!findUser) {
+        throw new HttpException(
+          'User does not exists',
+          HttpStatus.CONFLICT,
+      )};
+      const isPasswordvalid = await bcrypt.compare(password,  findUser.password);
+      if(!isPasswordvalid) {
+        throw new HttpException(
+          'User password does not match, please try again',
+          HttpStatus.CONFLICT,
+      )};
+      const payload = { id: findUser.id, email: findUser.email };
+      const token = this.jwt.sign(payload);
       return {
         success: true,
         statusCode: HttpStatus.OK,
@@ -84,26 +84,20 @@ export class AuthService {
           id: findUser.id,
           name: findUser.name,
           email: findUser.email,
-          ...tokenData, // includes `access_token`
+          token,
         },
-      };
-    } catch (error) {
-      if (error instanceof HttpException) {
-        throw error;
       }
-      throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+    } catch (error) {
+      if(error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new HttpException (
+          'Internal Server Error',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
     }
   }
   
-  async signInToken(id: number, email: string): Promise<{ access_token: string }> {
-    const payload = { sub: id, email };
-    const secret = this.config.get('JWT_SECRET');
-
-    const token = await this.jwt.signAsync(payload, {
-      expiresIn: '15m',
-      secret,
-    });
   
-    return { access_token: token };
-  }
 }

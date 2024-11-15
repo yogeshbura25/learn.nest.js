@@ -20,7 +20,6 @@ export class AuthController {
 
   @Post('loginuser')
   async loginUser(@Body() loginDto: loginDto) {
-    Req
     const { email, password } = loginDto;
     return this.authService.loginUser(email, password);
   }
