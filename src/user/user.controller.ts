@@ -24,6 +24,11 @@ getHello( ): string {
     return this.userService.multi();
   }
 
+  @Get('/mario')
+@UseGuards(GuardsService)
+  mario(): any {
+    return this.userService.mario();
+  }
 }
 
 
